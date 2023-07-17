@@ -1,0 +1,35 @@
+@import "@/styles/variables.scss";
+.page-content {
+    padding:0 10%;
+    background:$bg-1-color;
+}
+input{
+    font-size:14px;
+    font-family: $secondary-font;
+    border:none;
+    background: $tertiary-color;
+    color:$secondary-color;
+    border-radius:5px;
+    padding: 0.5em 1em;
+}
+input:focus{
+    outline: none;
+    border-color: transparent;
+    box-shadow: none;
+}
+button{
+    border:none;
+    font-family: $primary-font;
+}
+.header-1{
+    font-size: 32px;
+    font-weight:700;
+}
+.header-2{
+    font-weight:700;
+    font-size:22px;
+}
+a{
+    color:$hyperlink-text-color;
+    text-decoration:none;
+}

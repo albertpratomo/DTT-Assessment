@@ -1,0 +1,38 @@
+@import "@/styles/variables.scss";
+nav {
+  padding: 1em 10%;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  box-shadow: 0px 10px 10px -10px $tertiary-color;
+  background:white;
+}
+
+.logo {
+  width: 10%;
+}
+.logo img {
+  width: 100%;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 40px;
+}
+
+.nav-item-active {
+  font-weight: 700 !important;
+  color: $primary-text-color !important;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: $secondary-text-color;
+  padding: 5px;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 18px;
+}

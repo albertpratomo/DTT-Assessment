@@ -1,0 +1,17 @@
+@import "@/styles/variables.scss";
+.search-bar {
+    display: flex;
+    align-items: flex-start;
+    background: $tertiary-color;
+    border-radius: 5px;
+    padding-left: 0.5em;
+    width: 40%;
+  }
+  
+  .search-bar img {
+    width: 1em;
+    align-self: center;
+  }
+  .search-bar input {
+    width: 100%;
+  }
