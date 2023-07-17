@@ -54,21 +54,25 @@
     </div>
   </div>
 </template>
+
 <script setup>
 //import { useModal } from "@/stores/modal";
-
-import { defineProps } from "vue";
+import { getHouseById } from "@/api/houseByIdApi";
+import { defineProps, ref } from "vue";
 
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
-  house: Object,
+  id: String,
 });
-console.log("props: " + props.house);
+
+const data = await getHouseById(props.id);
+const house = ref(data[0])
 // const modal = useModal();
 // function handleOnClickOpenModal() {
 //   modal.open();
 // }
 </script>
+
 <style lang="scss">
 @import "@/styles/variables.scss";
 .house-detail {

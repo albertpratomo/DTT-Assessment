@@ -13,7 +13,7 @@
     <div class="section-detail-2">
       <Suspense>
         <template #default>
-          <HouseDetail v-if="houseLoaded" :house="house.value" />
+          <HouseDetail :id="id" />
         </template>
         <template #fallback>
           <div>Loading...</div>
@@ -40,34 +40,21 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import HouseCard from "@/components/utility/HouseCard.vue";
-
-import { ref, onMounted, nextTick } from "vue";
 import { getHouses } from "@/api/housesApi";
-import { getHouseById } from "@/api/houseByIdApi";
+import { ref } from "vue";
 import PrimaryButton from "@/components/utility/PrimaryButton.vue";
 import HouseDetail from "@/components/HouseDetail.vue";
-//import { useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 
-//const route = useRoute();
-//const id = route?.params?.id ?? "2";
-const houses = ref([]);
-const house = ref([]);
-const houseLoaded = ref(false);
-const houseDetail = ref("");
-onMounted(async () => {
-  houses.value = await getHouses();
-  const data = await getHouseById(2);
-  house.value = data[0];
-  console.log("house to be passed: " + JSON.stringify(house.value));
-  console.log("house to be passed: " + house.value.id);
-  await nextTick();
-  houseLoaded.value = true;
-  houseDetail.value = `<HouseDetail :house="house.value" />`;
-});
-// var isFetched = true;
+const route = useRoute();
+const id = route?.params?.id;
+
+const houses = ref(await getHouses());
 </script>
+
 <style scoped lang="scss">
 @import "@/styles/pages.scss";
 .section-detail-1 {
