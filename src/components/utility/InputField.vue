@@ -131,45 +131,4 @@ const removeImage = () => {
 </script>
 <style scoped lang="scss">
 @import "@/styles/variables.scss";
-
-.input {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  width: 100%;
-}
-.input:hover {
-  cursor: default;
-}
-input[type="file"] {
-  display: none;
-}
-.upload-button {
-  width: 30%;
-  aspect-ratio: 1/1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed $tertiary-2-color;
-  margin-top: 1em;
-}
-.preview {
-  background-size: cover; //
-  border-radius: 5px; //
-  border: none; //
-  position: relative; //
-}
-.upload-button img.upload-icon {
-  width: 2em;
-}
-
-.upload-button img.cancel-button {
-  width: 2em; //
-  position: absolute; //
-  top: -0.5em; //
-  right: -0.6em; //
-}
-.upload-button:hover {
-  cursor: pointer;
-}
 </style>

@@ -1,34 +1,43 @@
-export const createHouse = async (houseData) => {
-  console.log('FORM DATA: '+JSON.stringify(houseData));
-  const formData = new FormData();
-  formData.append("price", houseData.price);
-  formData.append("bedrooms", houseData.bedrooms);
-  formData.append("bathrooms", houseData.bathrooms);
-  formData.append("size", houseData.size);
-  formData.append("streetName", houseData.streetname);
-  formData.append("houseNumber", houseData.housenumber);
-  formData.append("numberAddition", houseData.additionoptional);
-  formData.append("zip", houseData.postalcode);
-  formData.append("city", houseData.city);
-  formData.append("constructionYear", houseData.constructionyear);
-  formData.append("hasGarage", houseData.garage);
-  formData.append("description", houseData.description);
+export const createHouse = async (formData) => {
+  try {
+    // const response1 = await fetch(process.env.VUE_APP_API_URL, {
+    //   method: "POST",
+    //   headers: {
+    //     "x-api-key": process.env.VUE_APP_API_KEY,
+    //   },
+    //   body: formData,
+    // });
 
-  // try {
-  //   const response = await fetch(process.env.VUE_APP_API_URL, {
-  //     method: "POST",
-  //     headers: {
-  //       "x-api-key": process.env.VUE_APP_API_KEY,
-  //     },
-  //     body: formData,
-  //   });
+    // if (!response1.ok) {
+    //   throw new Error("Failed to create the listing");
+    // }
 
-  //   if (!response.ok) {
-  //     throw new Error("Failed to create the listing");
-  //   }
-  //   console.log('API RESPONSE: ' + response.json());
-  // } catch (error) {
-  //   console.error(error);
-  //   throw error;
-  // }
+    // const jsonResponse1 = await response1.json();
+    // console.log('API RESPONSE 1:', jsonResponse1);
+
+    // const id = jsonResponse1.id; // Get the 'id' from response1
+
+    // const id= '9376';
+    console.log("IMAGE API : ");
+    console.log(JSON.stringify(formData.image));
+
+    // // Now, you can use the 'id' to make the second API call (response2)
+    // const response2 = await fetch(`${process.env.VUE_APP_API_URL}/${id}/upload`, {
+    //   method: "POST",
+    //   headers: {
+    //     "x-api-key": process.env.VUE_APP_API_KEY,
+    //     'Content-Type': 'multipart/form-data'
+    //   },
+    //   body: formData.image,
+    // });
+
+    // if (!response2.ok) {
+    //   throw new Error("Failed to upload the image");
+    // }
+    // console.log(response2.status);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
+
