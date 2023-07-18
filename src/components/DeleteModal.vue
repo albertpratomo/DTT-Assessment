@@ -9,9 +9,9 @@
             undone.
           </p>
           <div class="actions">
-            <PrimaryButton @click="modal.close()">YES, DELETE</PrimaryButton>
-            <PrimaryButton type="secondary" @click="modal.close()"
-              >GO BACK</PrimaryButton
+            <ActionButton @click="modal.close()">YES, DELETE</ActionButton>
+            <ActionButton type="secondary" @click="modal.close()"
+              >GO BACK</ActionButton
             >
           </div>
         </div>
@@ -20,7 +20,7 @@
   </div>
 </template>
 <script setup>
-import PrimaryButton from "@/components/utility/PrimaryButton.vue";
+import ActionButton from "@/components/utility/ActionButton.vue";
 import { storeToRefs } from "pinia";
 import { useModal } from "@/stores/modal";
 

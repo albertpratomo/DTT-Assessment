@@ -1,8 +1,13 @@
 <template>
-  <router-link to="/detail">
+  <router-link :to="`/detail/${house.id}`">
     <div class="house-card">
       <div class="house-info">
-        <div class="image"></div>
+        <div
+          class="image"
+          :style="{
+            background: 'url(' + house.image + ') center/cover no-repeat',
+          }"
+        ></div>
         <div class="description">
           <div class="address">{{ house.location.street }}</div>
           <p class="price">{{ house.price }}</p>

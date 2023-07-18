@@ -1,6 +1,9 @@
 <template>
-  <div class="house-detail">
-    <div class="image"></div>
+  <div class="house-detail" v-if="house">
+    <div
+      class="image"
+      :style="{ background: 'url(' + house.image + ') center/cover no-repeat' }"
+    ></div>
     <div class="detail">
       <div class="row-detail-1">
         <div class="header-1">{{ house.location.street }}</div>
@@ -55,19 +58,32 @@
   </div>
 </template>
 <script setup>
-//import { useModal } from "@/stores/modal";
-
-import { defineProps } from "vue";
-
-// eslint-disable-next-line no-unused-vars
+import { useModal } from "@/stores/modal";
+import { getHouseById } from "@/api/houseByIdApi";
+import { defineProps, ref } from "vue";
+import { onBeforeRouteUpdate } from "vue-router";
 const props = defineProps({
   house: Object,
+  id: String,
 });
-console.log("props: " + props.house);
-// const modal = useModal();
-// function handleOnClickOpenModal() {
-//   modal.open();
-// }
+const house = ref();
+const modal = useModal();
+function handleOnClickOpenModal() {
+  modal.open();
+}
+async function fetchHouseById(id) {
+  const data = await getHouseById(id);
+  house.value = data[0]; // Update the house value
+}
+// Fetch the house data on component mount
+fetchHouseById(props.id);
+
+// Watch for route parameter changes and fetch updated data accordingly
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.id !== from.params.id) {
+    fetchHouseById(to.params.id);
+  }
+});
 </script>
 <style lang="scss">
 @import "@/styles/variables.scss";
@@ -79,9 +95,7 @@ console.log("props: " + props.house);
 }
 .house-detail .image {
   width: 100%;
-  height: 60%;
-  background-image: url("@/assets/image/img_placeholder_house@3x.png");
-  background-size: cover;
+  aspect-ratio: 2433/1626;
 }
 .detail {
   padding: 2em;

@@ -3,9 +3,9 @@
     <div class="section-1">
       <h1 class="header-1">Houses</h1>
 
-      <router-link to="/mylisting">
-        <PrimaryButton prependIcon="ic_plus_white@3x.png"
-          >CREATE NEW</PrimaryButton
+      <router-link to="/mylistingform">
+        <ActionButton prependIcon="ic_plus_white@3x.png"
+          >CREATE NEW</ActionButton
         >
       </router-link>
     </div>
@@ -33,7 +33,7 @@
 <script setup>
 import HouseCard from "@/components/utility/HouseCard.vue";
 import SearchBar from "@/components/utility/SearchBar.vue";
-import PrimaryButton from "@/components/utility/PrimaryButton.vue";
+import ActionButton from "@/components/utility/ActionButton.vue";
 import { getHouses } from "@/api/housesApi";
 import { ref } from "vue";
 

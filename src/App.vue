@@ -3,7 +3,9 @@
   <div class="app">
     <DeleteModal />
     <NavBar />
-    <router-view class="main" />
+    <Suspense>
+      <router-view class="main" />
+    </Suspense>
   </div>
 </template>
 

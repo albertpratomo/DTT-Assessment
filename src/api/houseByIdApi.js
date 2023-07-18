@@ -1,9 +1,9 @@
 export const getHouseById = async ( id
     
   ) => {
-    const response = await fetch(`https://api.intern.d-tt.nl/api/houses/${id}`, {
+    const response = await fetch(process.env.VUE_APP_API_URL+'/'+id, {
         headers: {
-          'x-api-key': 'the-api-key'
+          'x-api-key': process.env.VUE_APP_API_KEY
         }})
         if (!response.ok) {
             throw new Error('Failed to fetch house');
