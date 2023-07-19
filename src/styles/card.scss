@@ -14,7 +14,7 @@
   .house-info {
     display: flex;
     gap: 1em;
-    width: 100%; //90%
+    width: max-content; //90%
   }
   
   .house-card .image {
@@ -68,7 +68,4 @@
   }
   .info p {
     margin: 0;
-  }
-  .actions{
-    display:none; //
   }

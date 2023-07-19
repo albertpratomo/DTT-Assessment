@@ -3,7 +3,7 @@
     <div class="section-1">
       <h1 class="header-1">Houses</h1>
 
-      <router-link to="/mylistingform">
+      <router-link to="/create">
         <ActionButton prependIcon="ic_plus_white@3x.png"
           >CREATE NEW</ActionButton
         >

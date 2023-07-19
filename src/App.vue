@@ -1,7 +1,6 @@
 <template>
-  <!-- <div class="app" :class="`${$route.meta.bg}`"> -->
   <div class="app">
-    <DeleteModal />
+    <Modal />
     <NavBar />
     <Suspense>
       <router-view class="main" />
@@ -11,7 +10,7 @@
 
 <script setup>
 import NavBar from "@/components/NavBar/NavBar.vue";
-import DeleteModal from "@/components/DeleteModal.vue";
+import Modal from "@/components/DeleteModal.vue";
 </script>
 
 <style lang="scss">
@@ -29,8 +28,4 @@ import DeleteModal from "@/components/DeleteModal.vue";
   flex-grow: 1;
   padding: 16px;
 }
-// .bg-my-listing {
-//   background: url("@/assets/image/img_background@3x.png");
-//   background-size: cover;
-// }
 </style>

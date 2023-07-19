@@ -1,7 +1,7 @@
 import housesPage from "@/pages/HousesPage.vue";
 import aboutPage from "@/pages/AboutPage.vue";
 import detailPage from "@/pages/DetailPage.vue";
-import myListingFormPage from "@/pages/MyListingFormPage.vue";
+import FormPage from "@/pages/FormPage.vue";
 
 import * as VueRouter from "vue-router";
 
@@ -19,11 +19,14 @@ const routes = [
     component: detailPage,
   },
   {
-    path: "/mylistingform",
-    component: myListingFormPage,
-    meta: {
-      bg: `bg-my-listing`
-  }
+    path: '/edit/:id', 
+    name: 'EditForm',
+    component: FormPage,
+  },
+  {
+    path: '/create',
+    name: 'CreateForm',
+    component: FormPage,
   },
   
 ];

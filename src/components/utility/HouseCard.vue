@@ -30,10 +30,12 @@
           </div>
         </div>
       </div>
-      <div class="actions" v-if="house.madeByMe">
-        <button class="icon-btn">
-          <img src="@/assets/image/ic_edit@3x.png" alt="" />
-        </button>
+      <div class="actions" v-if="house.madeByMe == true">
+        <router-link :to="`/edit/${house.id}`"
+          ><button class="icon-btn">
+            <img src="@/assets/image/ic_edit@3x.png" alt="" /></button
+        ></router-link>
+
         <button class="icon-btn">
           <img src="@/assets/image/ic_delete@3x.png" alt="" />
         </button>

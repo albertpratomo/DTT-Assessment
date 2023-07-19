@@ -1,6 +1,6 @@
-export const createHouse = async (formData, formDataImage) => {
+export const editHouse = async (id,formData, formDataImage) => {
   try {
-    // const response1 = await fetch(process.env.VUE_APP_API_URL, {
+    // const response1 = await fetch(`${process.env.VUE_APP_API_URL}/${id}`, {
     //   method: "POST",
     //   headers: {
     //     "x-api-key": process.env.VUE_APP_API_KEY,
@@ -9,7 +9,7 @@ export const createHouse = async (formData, formDataImage) => {
     // });
 
     // if (!response1.ok) {
-    //   throw new Error("Failed to create the listing");
+    //   throw new Error("Failed to edit the listing");
     // }
 
     // const jsonResponse1 = await response1.json();
@@ -18,6 +18,7 @@ export const createHouse = async (formData, formDataImage) => {
     // const id = jsonResponse1.id; // Get the 'id' from response1
 
     //const id= '9376';
+    console.log("ID"  + id);
     console.log("FD"  + formData);
     for (var pair of formDataImage.entries()) {
       console.log(pair[0] + ", " + pair[1]);
@@ -30,11 +31,6 @@ export const createHouse = async (formData, formDataImage) => {
       }
       console.log(JSON.stringify(imageObject));
     }
-
-    //console.log("IMAGE TYPE : ");
-    //console.log(formDataImage.type);
-
-    // // Now, you can use the 'id' to make the second API call (response2)
     // const response2 = await fetch(`${process.env.VUE_APP_API_URL}/${id}/upload`, {
     //   method: "POST",
     //   headers: {
