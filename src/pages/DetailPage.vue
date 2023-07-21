@@ -50,7 +50,7 @@
 import HouseCard from "@/components/utility/HouseCard.vue";
 
 import { ref } from "vue";
-import { getRecHouses } from "@/api/recHousesApi";
+import { getRecHouses } from "@/api/RecHousesApi";
 import ActionButton from "@/components/utility/ActionButton.vue";
 import HouseDetail from "@/components/HouseDetail.vue";
 import { useRoute } from "vue-router";

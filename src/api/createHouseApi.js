@@ -22,6 +22,8 @@ export const createHouse = async (formData,formDataImage) => {
     if(!responseImage.ok){
       throw new Error("error upload image");
     }
+
+    return jsonResponse;
   } catch (error) {
     console.error(error);
     throw error;

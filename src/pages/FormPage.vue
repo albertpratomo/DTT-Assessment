@@ -293,8 +293,8 @@ const submitForm = async () => {
         }
       } else {
         try {
-          await createHouse(formData1, formData2);
-          router.push("/detail/" + id);
+          const house = await createHouse(formData1, formData2);
+          router.push("/detail/" + house.id);
         } catch (error) {
           console.error(error);
           throw error;
