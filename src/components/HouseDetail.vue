@@ -72,7 +72,7 @@
   </div>
 </template>
 <script setup>
-import { getHouseById } from "@/api/houseByIdApi";
+import { getHouseById } from "@/api/getHouseByIdApi";
 import { defineProps, ref } from "vue";
 import { onBeforeRouteUpdate } from "vue-router";
 import { useRoute } from "vue-router";

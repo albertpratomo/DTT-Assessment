@@ -22,7 +22,7 @@
 </template>
 <script setup>
 import HouseCard from "@/components/utility/HouseCard.vue";
-import { getMyHouses } from "@/api/myHouseApi";
+import { getMyHouses } from "@/api/getMyHouseApi";
 import { ref } from "vue";
 const houses = ref([]);
 (async () => {

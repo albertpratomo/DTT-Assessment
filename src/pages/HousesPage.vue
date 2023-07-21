@@ -54,7 +54,7 @@ import HouseCard from "@/components/utility/HouseCard.vue";
 import SearchBar from "@/components/utility/SearchBar.vue";
 import ActionButton from "@/components/utility/ActionButton.vue";
 import ToggleButton from "@/components/utility/ToggleButton.vue";
-import { getHouses } from "@/api/housesApi";
+import { getHouses } from "@/api/getHousesApi";
 import { ref } from "vue";
 const searchQuery = ref("");
 const sortOptions = ["Price", "Size"];

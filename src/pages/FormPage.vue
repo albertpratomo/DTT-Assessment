@@ -20,7 +20,11 @@
       </div>
     </div>
 
-    <form @submit.prevent="submitForm" enctype="multipart/form-data">
+    <form
+      @submit.prevent="submitForm"
+      method="POST"
+      enctype="multipart/form-data"
+    >
       <InputTextNumber
         placeholder="Enter the street name"
         label="Street name"
@@ -129,20 +133,16 @@
         v-model="formData.constructionyear"
       />
       <InputTextArea
-        placeholder="e.g. 1990"
+        placeholder="Enter description"
         label="Description"
         required
         v-model="formData.description"
         rows="4"
       />
 
-      <ActionButton
-        class="btn"
-        submit
-        @click="submitForm"
-        :disabled="!isFormValid"
-        >{{ mode === "create" ? "POST" : "SAVE" }}</ActionButton
-      >
+      <ActionButton class="btn" @click="submitForm" :disabled="!isFormValid">{{
+        mode === "create" ? "POST" : "SAVE"
+      }}</ActionButton>
     </form>
   </div>
 </template>
@@ -154,7 +154,7 @@ import InputSelect from "@/components/utility/InputSelect.vue";
 import { ref, onMounted, computed } from "vue";
 import { createHouse } from "@/api/createHouseApi";
 import { editHouse } from "@/api/editHouseApi";
-import { getHouseById } from "@/api/houseByIdApi";
+import { getHouseById } from "@/api/getHouseByIdApi";
 import { useRoute, useRouter } from "vue-router";
 const router = useRouter();
 const lastRoute = computed(() => {
@@ -168,15 +168,12 @@ const route = useRoute();
 const id = route?.params?.id;
 onMounted(() => {
   if (id) {
-    //console.log("id: " + id);
     fetchFormData(id);
   }
 });
 const fetchFormData = async (id) => {
   try {
     const response = await getHouseById(id);
-    // console.log("response: ");
-    // console.log(response[0]);
     formData.value.constructionyear = response[0].constructionYear;
     formData.value.description = response[0].description;
     formData.value.garage = response[0].hasGarage;
@@ -242,17 +239,24 @@ const formData = ref({
   description: "",
 });
 const isFormValid = computed(() => {
-  for (const field in formData.value) {
-    if (Object.prototype.hasOwnProperty.call(formData.value, field)) {
-      if (!formData.value[field].trim() || selectedImage.value == null) {
-        return false; // If any required field is empty, form is not valid
-      }
+  const formDataValid = ref(null);
+  // for (const field in formData.value) {
+  //   if (Object.prototype.hasOwnProperty.call(formData.value, field)) {
+  //     if (!formData.value[field].trim() || formData.value[field].required) {
+  //       return false;
+  //     }
+  //   }
+  // }
+  formDataValid.value = true;
+  if (formDataValid.value) {
+    if (!selectedImage.value) {
+      return false;
     }
   }
-  return true; // All required fields are filled, form is valid
+  return true;
 });
 const submitForm = async () => {
-  if (isFormValid.value) {
+  if (isFormValid.value == true) {
     try {
       const formData1 = new FormData();
       formData1.append("price", formData.value.price);
@@ -278,18 +282,26 @@ const submitForm = async () => {
           console.log("No image selected.");
         }
       }
-      // for (var pair of formData1.entries()) {
-      //   console.log(pair[0] + ", " + pair[1]);
-      // }
+
       if (id) {
-        await editHouse(id, formData1, formData2);
-        router.push("/detail/" + id);
+        try {
+          await editHouse(id, formData1, formData2);
+          router.push("/detail/" + id);
+        } catch (error) {
+          console.error(error);
+          throw error;
+        }
       } else {
-        await createHouse(id, formData1, formData2);
-        router.push("/detail/" + id);
+        try {
+          await createHouse(formData1, formData2);
+          router.push("/detail/" + id);
+        } catch (error) {
+          console.error(error);
+          throw error;
+        }
       }
     } catch (error) {
-      console.error("Error creating house:", error.message);
+      console.error("Error creating/editing house:", error.message);
     }
     console.log("Form is valid. Submitting...");
   } else {
