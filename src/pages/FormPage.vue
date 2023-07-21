@@ -136,7 +136,13 @@
         rows="4"
       />
 
-      <ActionButton class="btn" submit @click="submitForm">POST</ActionButton>
+      <ActionButton
+        class="btn"
+        submit
+        @click="submitForm"
+        :disabled="!isFormValid"
+        >{{ mode === "create" ? "POST" : "SAVE" }}</ActionButton
+      >
     </form>
   </div>
 </template>
@@ -171,18 +177,18 @@ const fetchFormData = async (id) => {
     const response = await getHouseById(id);
     // console.log("response: ");
     // console.log(response[0]);
-    formData.constructionyear = response[0].constructionYear;
-    formData.description = response[0].description;
-    formData.garage = response[0].hasGarage;
-    formData.city = response[0].location.city;
-    formData.housenumber = response[0].location.houseNumber;
-    formData.addition = response[0].location.houseNumberAddition;
-    formData.streetname = response[0].location.street;
-    formData.postalcode = response[0].location.zip;
-    formData.price = response[0].price;
-    formData.bathrooms = response[0].rooms.bathrooms;
-    formData.bedrooms = response[0].rooms.bedrooms;
-    formData.size = response[0].size;
+    formData.value.constructionyear = response[0].constructionYear;
+    formData.value.description = response[0].description;
+    formData.value.garage = response[0].hasGarage;
+    formData.value.city = response[0].location.city;
+    formData.value.housenumber = response[0].location.houseNumber;
+    formData.value.addition = response[0].location.houseNumberAddition;
+    formData.value.streetname = response[0].location.street;
+    formData.value.postalcode = response[0].location.zip;
+    formData.value.price = response[0].price;
+    formData.value.bathrooms = response[0].rooms.bathrooms;
+    formData.value.bedrooms = response[0].rooms.bedrooms;
+    formData.value.size = response[0].size;
     selectedImage.value = response[0].image;
     imagePreview.value = `url('${response[0].image}')`;
     mode.value = "edit";
@@ -221,7 +227,7 @@ const removeImage = () => {
     inputElement.value = "";
   }
 };
-const formData = {
+const formData = ref({
   streetname: "",
   housenumber: "",
   addition: "",
@@ -234,44 +240,60 @@ const formData = {
   bedrooms: "",
   constructionyear: "",
   description: "",
-};
-
-const submitForm = async () => {
-  try {
-    const formData1 = new FormData();
-    formData1.append("price", formData.price);
-    formData1.append("bedrooms", formData.bedrooms);
-    formData1.append("bathrooms", formData.bathrooms);
-    formData1.append("size", formData.size);
-    formData1.append("streetName", formData.streetname);
-    formData1.append("houseNumber", formData.housenumber);
-    formData1.append("numberAddition", formData.addition);
-    formData1.append("zip", formData.postalcode);
-    formData1.append("city", formData.city);
-    formData1.append("constructionYear", formData.constructionyear);
-    formData1.append("hasGarage", formData.garage);
-    formData1.append("description", formData.description);
-    const formData2 = new FormData();
-    if (selectedImage.value) {
-      formData2.append("image", selectedImage.value);
-      console.log("image value: " + selectedImage.value.name);
-      const imageFile = formData2.get("image");
-      if (imageFile instanceof File) {
-        console.log("Image name: " + imageFile.name);
-      } else {
-        console.log("No image selected.");
+});
+const isFormValid = computed(() => {
+  for (const field in formData.value) {
+    if (Object.prototype.hasOwnProperty.call(formData.value, field)) {
+      if (!formData.value[field].trim() || selectedImage.value == null) {
+        return false; // If any required field is empty, form is not valid
       }
     }
-    // for (var pair of formData1.entries()) {
-    //   console.log(pair[0] + ", " + pair[1]);
-    // }
-    if (id) {
-      await editHouse(id, formData1, formData2);
-    } else {
-      await createHouse(id, formData1, formData2);
+  }
+  return true; // All required fields are filled, form is valid
+});
+const submitForm = async () => {
+  if (isFormValid.value) {
+    try {
+      const formData1 = new FormData();
+      formData1.append("price", formData.value.price);
+      formData1.append("bedrooms", formData.value.bedrooms);
+      formData1.append("bathrooms", formData.value.bathrooms);
+      formData1.append("size", formData.value.size);
+      formData1.append("streetName", formData.value.streetname);
+      formData1.append("houseNumber", formData.value.housenumber);
+      formData1.append("numberAddition", formData.value.addition);
+      formData1.append("zip", formData.value.postalcode);
+      formData1.append("city", formData.value.city);
+      formData1.append("constructionYear", formData.value.constructionyear);
+      formData1.append("hasGarage", formData.value.garage);
+      formData1.append("description", formData.value.description);
+      const formData2 = new FormData();
+      if (selectedImage.value) {
+        formData2.append("image", selectedImage.value);
+        console.log("image value: " + selectedImage.value.name);
+        const imageFile = formData2.get("image");
+        if (imageFile instanceof File) {
+          console.log("Image name: " + imageFile.name);
+        } else {
+          console.log("No image selected.");
+        }
+      }
+      // for (var pair of formData1.entries()) {
+      //   console.log(pair[0] + ", " + pair[1]);
+      // }
+      if (id) {
+        await editHouse(id, formData1, formData2);
+        router.push("/detail/" + id);
+      } else {
+        await createHouse(id, formData1, formData2);
+        router.push("/detail/" + id);
+      }
+    } catch (error) {
+      console.error("Error creating house:", error.message);
     }
-  } catch (error) {
-    console.error("Error creating house:", error.message);
+    console.log("Form is valid. Submitting...");
+  } else {
+    console.log("Form is not valid. Cannot submit.");
   }
 };
 </script>
