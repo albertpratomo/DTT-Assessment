@@ -4,23 +4,42 @@
       <h1 class="header-1">Houses</h1>
 
       <router-link to="/create">
-        <ActionButton prependIcon="ic_plus_white@3x.png"
+        <ActionButton class="add-btn-desktop" prependIcon="ic_plus_white@3x.png"
           >CREATE NEW</ActionButton
         >
+        <ActionButton class="add-btn-mobile" type="label"
+          ><img
+            style="width: 1.5em"
+            src="@/assets/image/ic_plus_grey@3x.png"
+            alt=""
+        /></ActionButton>
       </router-link>
     </div>
     <div class="section-2">
-      <SearchBar />
-      <div class="sort">
-        <button class="col-price">Price</button>
-        <button class="col-size">Size</button>
-      </div>
+      <SearchBar v-model="searchQuery" class="searchbar" />
+      <ToggleButton
+        class="sort"
+        :options="sortOptions"
+        @update="handleActiveButtonChange"
+      />
     </div>
     <div class="section-3">
+      <div class="result-number" v-if="searchQuery && filteredList().length">
+        <h3>{{ filteredList().length }} results found</h3>
+      </div>
+      <div class="no-result" v-if="searchQuery && !filteredList().length">
+        <img src="@/assets/image/img_empty_houses@3x.png" alt="" />
+        <p>No results found.<br />Please try another keyword.</p>
+      </div>
       <Suspense>
         <template #default>
           <div>
-            <HouseCard v-for="house in houses" :key="house.id" :house="house" />
+            <HouseCard
+              v-for="house in filteredList()"
+              :key="house.id"
+              :house="house"
+              @houseDeleted="handleHouseDeleted"
+            />
           </div>
         </template>
         <template #fallback>
@@ -34,34 +53,60 @@
 import HouseCard from "@/components/utility/HouseCard.vue";
 import SearchBar from "@/components/utility/SearchBar.vue";
 import ActionButton from "@/components/utility/ActionButton.vue";
+import ToggleButton from "@/components/utility/ToggleButton.vue";
 import { getHouses } from "@/api/housesApi";
 import { ref } from "vue";
-
+const searchQuery = ref("");
+const sortOptions = ["Price", "Size"];
 const houses = ref([]);
-
+const list = ref([]);
+const activeButton = ref("");
+const handleActiveButtonChange = (button) => {
+  activeButton.value = button;
+  if (button == "Price") {
+    sortHousesByPrice();
+  } else {
+    sortHousesBySize();
+  }
+};
+const sortHousesByPrice = () => {
+  houses.value.sort((a, b) => a.price - b.price);
+};
+const sortHousesBySize = () => {
+  houses.value.sort((a, b) => a.size - b.size);
+};
 (async () => {
   houses.value = await getHouses();
+  list.value = houses.value;
+  sortHousesByPrice();
 })();
 
-// const data = ref();
+function filteredList() {
+  const query = searchQuery.value.toLowerCase();
+  const res = houses.value.filter((house) =>
+    house.location.street.toLowerCase().includes(query)
+  );
+  const temp = JSON.stringify(res);
+  return JSON.parse(temp);
+}
 
-// onMounted(async () => {
-//   try {
-//     const response = await fetch(`https://api.intern.d-tt.nl/api/houses`, {
-//       headers: {
-//         "x-api-key": "UcZHkF9BCX8EG4qz1PNJg05ieQKSV7hL",
-//       },
-//     });
-//     const jsonData = await response.json();
-//     data.value = jsonData;
-//console.log(data.value[0].id);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// });
+const handleHouseDeleted = async () => {
+  houses.value = await getHouses();
+  console.log("House deleted. Reloading house list...");
+};
 </script>
 <style lang="scss">
 @import "@/styles/pages.scss";
+.result-number {
+  text-align: left;
+}
+.result-number h3 {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  @include sm {
+    font-size: 14px;
+  }
+}
 .section-1,
 .section-2 {
   display: flex;
@@ -69,59 +114,52 @@ const houses = ref([]);
   padding: 0 0;
   align-items: center;
 }
+.section-1 .header-1 {
+  @include sm {
+    flex-grow: 1;
+  }
+}
+.add-btn-mobile.button {
+  padding-right: 0;
+  display: none;
+  @include sm {
+    display: flex;
+  }
+}
+.add-btn-desktop.button {
+  @include sm {
+    display: none;
+  }
+}
+.searchbar,
+.sort {
+  @include sm {
+    width: 100%;
+  }
+}
 .section-1 {
-  margin-top: 1.5em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
 }
 .section-2 {
   padding-bottom: 0.5em;
+  @include sm {
+    flex-direction: column;
+    gap: 1em;
+  }
 }
-button:hover {
-  cursor: pointer;
-}
-.btn {
-  border: none;
-  background: $primary-color;
-  border-radius: 5px;
-  color: white;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 0.5em 1em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1em;
-}
-.btn img {
-  width: 1em;
-}
-.btn p {
-  margin: 0;
-}
-
-.sort {
-  display: flex;
-}
-.col-price {
-  background: $primary-color;
-  color: white;
-  font-size: 14px;
-  padding: 0.5em 3.5em;
-  border-radius: 5px 0 0 5px;
-}
-.col-size {
-  background: $tertiary-2-color;
-  color: white;
-  font-size: 14px;
-  border-radius: 0 5px 5px 0;
-  padding: 0.5em 3.5em;
-}
-
 .section-3 {
   padding: 1em 0;
   display: flex;
   flex-direction: column;
   gap: 1em;
+  flex-grow: 1;
+  justify-content: center;
+}
+.no-result img {
+  width: 30%;
+  @include sm {
+    width: 60%;
+  }
 }
 </style>

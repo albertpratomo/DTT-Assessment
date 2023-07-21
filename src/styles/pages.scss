@@ -1,8 +1,22 @@
 @import "@/styles/variables.scss";
+@import "@/styles/breakpoints.scss";
 .page-content {
     padding:0 10%;
     background:$bg-1-color;
     z-index:1;
+    padding-bottom: 2em;
+    padding-top:100px;
+    display:flex;
+    flex-direction: column;
+    @include rwd(1155){
+        padding-left:5%;
+        padding-right:5%;
+    }
+    @include sm{
+        padding: 0 5%;
+        padding-bottom:84px;
+        padding-top:5%;
+    }
 }
 input, textarea, select{
     font-size:14px;
@@ -11,6 +25,9 @@ input, textarea, select{
     color:$secondary-color;
     border-radius:5px;
     padding: 0.5em 1em;
+    @include sm{
+        font-size:12px;
+    }
 }
 input:focus, textarea:focus, select:focus{
     outline: none;
@@ -21,13 +38,22 @@ button{
     border:none;
     font-family: $primary-font;
 }
+button:hover{
+    cursor:pointer;
+}
 .header-1{
     font-size: 32px;
     font-weight:700;
+    @include sm{
+        font-size:18px;
+    }
 }
 .header-2{
     font-weight:700;
     font-size:22px;
+    @include sm{
+        font-size:14px;
+    }
 }
 a{
     color:$hyperlink-text-color;

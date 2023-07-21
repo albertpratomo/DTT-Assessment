@@ -1,4 +1,4 @@
-export const getRecHouses = async (
+export const getRecHouses = async (id
     
   ) => {
     const response = await fetch(process.env.VUE_APP_API_URL, {
@@ -18,7 +18,10 @@ export const getRecHouses = async (
   const shuffledHouses = shuffleArray(houses);
 
   // Return the first 3 elements from the shuffled array
-  return shuffledHouses.slice(0, 3);
+  const filteredHouses = shuffledHouses.filter(house => house.id !== id && house.madeByMe === false);
+
+  // Return the first 3 elements from the filtered array
+  return filteredHouses.slice(0, 3);
 };
 
 // Helper function to shuffle an array randomly using Fisher-Yates algorithm

@@ -11,6 +11,7 @@ export const deleteHouse = async (id) => {
       throw new Error("Failed to delete listing");
     }
     console.log(response.status);
+    return response;
   } catch (error) {
     console.error(error);
     throw error;

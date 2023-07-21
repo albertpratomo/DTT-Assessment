@@ -1,21 +1,25 @@
 <template>
-  <button :class="buttonClass" @click="handleClick">
+  <button
+    :class="buttonClass"
+    @click="handleClick"
+    :type="submit ? 'submit' : 'button'"
+  >
     <slot name="prepend-icon">
       <span v-if="prependIcon" class="button-icon prepend-icon">
-        <img :src="prependSrc" />
+        <img :src="require('@/assets/image/' + props.prependIcon)" />
       </span>
     </slot>
     <slot></slot>
     <slot name="append-icon">
       <span v-if="appendIcon" class="button-icon append-icon">
-        <img :src="appendSrc" />
+        <img :src="require('@/assets/image/' + props.appendIcon)" />
       </span>
     </slot>
   </button>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, defineProps, defineEmits } from "vue";
+import { computed, defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   type: {
@@ -32,6 +36,7 @@ const props = defineProps({
   appendIcon: {
     type: String,
   },
+  submit: Boolean,
 });
 
 const buttonClass = computed(() => [
@@ -49,24 +54,6 @@ function handleClick() {
     emit("click");
   }
 }
-
-const prependSrc = ref("");
-const appendSrc = ref("");
-
-onMounted(async () => {
-  if (props.prependIcon) {
-    // Dynamically import the image
-    prependSrc.value = (
-      await import("@/assets/image/" + props.prependIcon)
-    ).default;
-  }
-  if (props.appendIcon) {
-    // Dynamically import the image
-    appendSrc.value = (
-      await import("@/assets/image/" + props.appendIcon)
-    ).default;
-  }
-});
 </script>
 
 <style lang="scss" scoped>

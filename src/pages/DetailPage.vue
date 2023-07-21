@@ -2,9 +2,18 @@
   <div class="page-content">
     <div class="section-detail-1">
       <router-link to="/">
-        <ActionButton class="btn" type="label" prependIcon="ic_back_grey@3x.png"
+        <ActionButton
+          class="btn btn-back-desktop"
+          type="label"
+          prependIcon="ic_back_grey@3x.png"
           >Back to overview</ActionButton
         >
+        <ActionButton class="btn btn-back-mobile" type="label"
+          ><img
+            style="width: 1.5em"
+            src="@/assets/image/ic_back_white@3x.png"
+            alt=""
+        /></ActionButton>
       </router-link>
     </div>
     <div class="section-detail-2">
@@ -47,18 +56,44 @@ import HouseDetail from "@/components/HouseDetail.vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
 const id = route?.params?.id;
-const houses = ref(await getRecHouses());
+const houses = ref(await getRecHouses(id));
 </script>
 <style scoped lang="scss">
 @import "@/styles/pages.scss";
+.page-content {
+  @include sm {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
 .section-detail-1 {
   margin-top: 1.5em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   display: flex;
+  @include sm {
+    position: absolute;
+    top: 0;
+    left: 1.5em;
+    padding-top: 0;
+  }
 }
 .btn {
   padding-left: 0;
+}
+
+.btn-back-desktop {
+  @include sm {
+    display: none;
+  }
+}
+
+.btn-back-mobile {
+  display: none;
+  @include sm {
+    display: block;
+  }
 }
 
 .section-detail-2 {
@@ -66,6 +101,9 @@ const houses = ref(await getRecHouses());
   padding-bottom: 0.5em;
   justify-content: space-between;
   gap: 1em;
+  @include rwd(1026) {
+    flex-direction: column;
+  }
 }
 
 .rec-list {
@@ -73,6 +111,11 @@ const houses = ref(await getRecHouses());
   display: flex;
   flex-direction: column;
   gap: 1em;
+  @include rwd(1026) {
+    width: auto;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
 }
 
 .rec-list .header-2 {

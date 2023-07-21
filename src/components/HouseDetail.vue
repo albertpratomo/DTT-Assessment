@@ -8,11 +8,25 @@
       <div class="row-detail-1">
         <div class="header-1">{{ house.location.street }}</div>
         <div class="actions-1" v-if="house.madeByMe">
-          <button class="icon-btn">
-            <img src="@/assets/image/ic_edit@3x.png" alt="" />
-          </button>
-          <button class="icon-btn" @click="handleOnClickOpenModal">
-            <img src="@/assets/image/ic_delete@3x.png" alt="" />
+          <router-link :to="`/edit/${house.id}`">
+            <button class="icon-btn icon-btn-desktop">
+              <img src="@/assets/image/ic_edit@3x.png" alt="" />
+            </button>
+          </router-link>
+          <button
+            class="icon-btn icon-btn-desktop"
+            @click="handleOnClickOpenModal"
+          >
+            <img src="@/assets/image/ic_delete@3x.png" alt="" /></button
+          ><router-link :to="`/edit/${house.id}`">
+            <button class="icon-btn icon-btn-mobile">
+              <img src="@/assets/image/ic_edit_white@3x.png" alt="" /></button
+          ></router-link>
+          <button
+            class="icon-btn icon-btn-mobile"
+            @click="handleOnClickOpenModal"
+          >
+            <img src="@/assets/image/ic_delete_white@3x.png" alt="" />
           </button>
         </div>
       </div>
@@ -58,39 +72,89 @@
   </div>
 </template>
 <script setup>
-import { useModal } from "@/stores/modal";
 import { getHouseById } from "@/api/houseByIdApi";
 import { defineProps, ref } from "vue";
 import { onBeforeRouteUpdate } from "vue-router";
+import { useRoute } from "vue-router";
+import { useModal } from "@/stores/modal";
+import { deleteHouse } from "@/api/deleteHouseApi";
 const props = defineProps({
   house: Object,
   id: String,
 });
 const house = ref();
-const modal = useModal();
-function handleOnClickOpenModal() {
-  modal.open();
-}
+
 async function fetchHouseById(id) {
   const data = await getHouseById(id);
-  house.value = data[0]; // Update the house value
+  house.value = data[0];
 }
-// Fetch the house data on component mount
+
 fetchHouseById(props.id);
 
-// Watch for route parameter changes and fetch updated data accordingly
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.id !== from.params.id) {
     fetchHouseById(to.params.id);
   }
 });
+const router = useRoute();
+const modal = useModal();
+const handleOnClickOpenModal = () => {
+  modal.open(
+    "Delete Listing",
+    "Are you sure you want to delete this listing? This action cannot be undone.",
+    "",
+    [
+      {
+        label: "YES, DELETE",
+        btnType: "primary",
+        callback: async () => {
+          const res = await deleteHouse(props.house.id);
+          console.log("DELETE API RES: ");
+          console.log(res);
+          if (res.ok) {
+            modal.close();
+            modal.open("Listing deleted!", "", "correct.png", [
+              {
+                label: "OK",
+                btnType: "primary",
+                callback: () => {
+                  modal.close();
+                  router.push("/");
+                },
+              },
+            ]);
+            console.log("RES OK");
+          } else {
+            modal.close();
+            console.log("ERROR: " + res);
+            modal.open("Failed to delete listing", "", "ic_clear@3x.png", [
+              {
+                label: "OK",
+                btnType: "primary",
+                callback: () => {
+                  modal.close();
+                },
+              },
+            ]);
+          }
+        },
+      },
+      {
+        label: "GO BACK",
+        btnType: "secondary",
+        callback: () => {
+          modal.close();
+        },
+      },
+    ]
+  );
+};
 </script>
 <style lang="scss">
 @import "@/styles/variables.scss";
+@import "@/styles/breakpoints.scss";
 .house-detail {
-  //   font-family: $secondary-font;
-  //   color: $secondary-text-color;
-  width: 58%;
+  flex-grow: 1;
   background: white;
 }
 .house-detail .image {
@@ -103,6 +167,11 @@ onBeforeRouteUpdate(async (to, from) => {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  @include sm {
+    border-radius: 50px 50px 0 0;
+    background: white;
+    margin-top: -50px;
+  }
 }
 .detail .info {
   font-family: $secondary-font;
@@ -116,5 +185,25 @@ onBeforeRouteUpdate(async (to, from) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.actions-1 {
+  @include sm {
+    position: absolute;
+    top: 1.5em;
+    right: 1.5em;
+    display: flex;
+    gap: 1em;
+  }
+}
+.icon-btn-mobile {
+  display: none;
+  @include sm {
+    display: block;
+  }
+}
+.icon-btn-desktop {
+  @include sm {
+    display: none;
+  }
 }
 </style>

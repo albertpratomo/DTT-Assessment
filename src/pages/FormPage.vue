@@ -1,18 +1,25 @@
 <template>
   <div class="page-content">
     <div class="section-1">
-      <router-link to="/">
+      <router-link :to="lastRoute.fullPath">
         <ActionButton
           class="back-btn"
           type="label"
           prependIcon="ic_back_grey@3x.png"
-          >Back to overview</ActionButton
+          >Back to {{ lastRoute.name }}</ActionButton
         >
+        <ActionButton class="mobile-back-btn" type="label"
+          ><img
+            style="width: 1.5em"
+            src="@/assets/image/ic_back_grey@3x.png"
+            alt=""
+        /></ActionButton>
       </router-link>
+      <div class="header-1">
+        {{ mode === "create" ? "Create new" : "Edit" }} listing
+      </div>
     </div>
-    <div class="header-1">
-      {{ mode === "create" ? "Create new" : "Edit" }} listing
-    </div>
+
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <InputTextNumber
         placeholder="Enter the street name"
@@ -129,7 +136,7 @@
         rows="4"
       />
 
-      <ActionButton class="btn" type="submit">POST</ActionButton>
+      <ActionButton class="btn" submit @click="submitForm">POST</ActionButton>
     </form>
   </div>
 </template>
@@ -138,25 +145,32 @@ import ActionButton from "@/components/utility/ActionButton.vue";
 import InputTextNumber from "@/components/utility/InputTextNumber.vue";
 import InputTextArea from "@/components/utility/InputTextArea.vue";
 import InputSelect from "@/components/utility/InputSelect.vue";
-import { ref, onMounted } from "vue";
-//import { createHouse } from "@/api/createHouseApi";
+import { ref, onMounted, computed } from "vue";
+import { createHouse } from "@/api/createHouseApi";
+import { editHouse } from "@/api/editHouseApi";
 import { getHouseById } from "@/api/houseByIdApi";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+const router = useRouter();
+const lastRoute = computed(() => {
+  const backUrl = router.options.history.state.back;
+  const route = router.resolve({ path: `${backUrl}` });
+
+  return route;
+});
+
 const route = useRoute();
-
+const id = route?.params?.id;
 onMounted(() => {
-  const id = route?.params?.id;
-
   if (id) {
-    console.log("id: " + id);
+    //console.log("id: " + id);
     fetchFormData(id);
   }
 });
 const fetchFormData = async (id) => {
   try {
     const response = await getHouseById(id);
-    console.log("response: ");
-    console.log(response[0]);
+    // console.log("response: ");
+    // console.log(response[0]);
     formData.constructionyear = response[0].constructionYear;
     formData.description = response[0].description;
     formData.garage = response[0].hasGarage;
@@ -240,12 +254,22 @@ const submitForm = async () => {
     const formData2 = new FormData();
     if (selectedImage.value) {
       formData2.append("image", selectedImage.value);
-      console.log("image value: " + selectedImage.value);
+      console.log("image value: " + selectedImage.value.name);
+      const imageFile = formData2.get("image");
+      if (imageFile instanceof File) {
+        console.log("Image name: " + imageFile.name);
+      } else {
+        console.log("No image selected.");
+      }
     }
-    for (var pair of formData1.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
+    // for (var pair of formData1.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
+    if (id) {
+      await editHouse(id, formData1, formData2);
+    } else {
+      await createHouse(id, formData1, formData2);
     }
-    //await createHouse(formData1, formData2);
   } catch (error) {
     console.error("Error creating house:", error.message);
   }
@@ -255,16 +279,38 @@ const submitForm = async () => {
 @import "@/styles/pages.scss";
 .back-btn {
   padding-left: 0;
+  @include sm {
+    display: none;
+  }
+}
+.mobile-back-btn {
+  display: none;
+  padding-left: 0;
+  @include sm {
+    display: block;
+  }
 }
 .page-content {
   text-align: left;
-  padding-bottom: 2em;
   background: url("@/assets/image/img_background@3x.jpg");
   background-size: cover;
-  margin-top: 0.5em;
 }
 .section-1 {
-  margin-bottom: 0.5em;
+  display: flex;
+  gap: 0.5em;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 1.5em;
+  @include sm {
+    flex-direction: row;
+    gap: 0;
+    align-items: center;
+    padding: 0;
+  }
+}
+.section-1 .header-1 {
+  flex-grow: 1;
+  text-align: center;
 }
 form {
   margin-top: 2em;
@@ -275,18 +321,32 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1.5em;
+  @include lg {
+    width: 60%;
+  }
+  @include sm {
+    width: 100%;
+  }
 }
-
 .row {
   display: flex;
   justify-content: space-between;
   gap: 1em;
+  align-items: center;
+}
+.row > div {
+  @include rwd(1087) {
+    width: 47%;
+  }
 }
 .btn {
   width: fit-content;
   padding-left: 3em;
   padding-right: 3em;
   align-self: flex-end;
+  @include sm {
+    width: 100%;
+  }
 }
 .input {
   display: flex;
